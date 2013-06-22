@@ -10,11 +10,12 @@
 void doprocessing (int sock)
 {
     int n;
-    char s1[256];
     char buffer[256];
 
     memset(&(buffer), '0', 256);
     int recvMsgSize;
+    char file[]="Loans.txt";
+    //char recive(recvMsgSize);
 
     if ((recvMsgSize = recv(sock, buffer, 256, 0)) < 0) //Receive message from client
         perror("ERROR1 reading to socket ");
@@ -25,11 +26,7 @@ void doprocessing (int sock)
         if (send(sock, buffer, recvMsgSize, 0) != recvMsgSize) // Echo message back to client
             perror("ERROR2 writing to socket");
 
-        //LLAMADAs
-        s1[] = buffer.Substring(2, 5);
-        printf("String %s",s1[]);
-        findRFC(buffer);
-
+        busquedaRFC(buffer,file);
 
         if ((recvMsgSize = recv(sock, buffer, 256, 0)) < 0) //See if there is more data to receive
             perror("ERROR3 reading to socket ");
@@ -38,87 +35,18 @@ void doprocessing (int sock)
     closesocket(sock);    /* Close client socket */
 }
 
-//====================================================================================================
 
-void addRFC(char b[])
- {
-     FILE *p;
-     char a[256];
-     strcpy(a,b);
-
-     if((p=fopen("Loans.txt","a")) == NULL)
-        {
-            printf("Error en apertura\n");
-            getch();
-            exit(1);
-        }
-
-      fputs(a,p);
-      printf("\n");
-
-     fclose(p);
- }
-
-//====================================================================================================
-
-void findRFC(char b[])
+int busquedaRFC(int argc, char **argv)
 {
-    FILE *p;
-    char a[256]={0x0};
-
-    if((p=fopen("Loans.txt","r")) == NULL)
+        FILE *fp=fopen(argv[1],"r");
+        char  tmp[256]={0x0};
+        while(fp!=NULL && fgets(tmp, sizeof(tmp),fp)!=NULL)
         {
-            printf("Error en apertura\n");
-            getch();
-            exit(1);
+            if (strstr(tmp, argv[2]))
+            printf("%s", tmp);
         }
-    else
-        {
-            while(p!=NULL && fgets(a,sizeof(a),p)!=NULL)
-            {
-                if(strstr(a,b))
-                    strcpy(message_response,a);
-
-            }
-            if(p!=NULL)
-                fclose(p);
-        }
-
-
-}
-
-//====================================================================================================
-
-
-void checkCredit(char b[])
-{
-    FILE *p;
-    char a[256]={0x0};
-
-    if((p=fopen("Loans.txt","r+")) == NULL)
-        {
-            printf("Error en apertura\n");
-            getch();
-            exit(1);
-
-        }
-    else
-        {
-          while(p!=NULL && fgets(a,sizeof(a),p)!=NULL)
-           {
-                if(strstr(a,b))
-                {
-                    fpos_t pos;
-                    fgetpos(p, &pos );
-                    pos = pos -3;
-					fsetpos(p, &pos );
-					fprintf(p,"N");
-					break;
-                }
-               }
-            if(p!=NULL)
-                fclose(p);
-        }
+        if(fp!=NULL) fclose(fp);
+        return 0;
 }
 
 
@@ -131,6 +59,7 @@ BOOL initW32()
 		version = MAKEWORD( 2, 0 );
 
 		error = WSAStartup( version, &wsaData );
+
 
 		if ( error != 0 ) // check for error
         {
@@ -194,8 +123,9 @@ int main()
         }
 
       printf("Connecting with Java: %s\n", inet_ntoa(client.sin_addr) );// que mostrará la IP del cliente
-      send(fd2,"Server_N",99,0);//Muestra que enviará el mensaje de bienvenida al cliente
+      send(fd2,"Niha Server\n",99,0);//Muestra que enviará el mensaje de bienvenida al cliente
       doprocessing(fd2);
 
    }
 }
+
